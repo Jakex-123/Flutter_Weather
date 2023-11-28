@@ -5,9 +5,6 @@ import 'package:lottie/lottie.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-Future main() async {
-  await dotenv.load(fileName: ".env");
-}
 class WeatherPage extends StatefulWidget {
   const WeatherPage({super.key});
 
@@ -16,7 +13,7 @@ class WeatherPage extends StatefulWidget {
 }
 
 class _WeatherPageState extends State<WeatherPage> {
-  final _weatherService = WeatherService(dotenv.env['API_KEY'].toString());
+  final _weatherService = WeatherService((dotenv.env['API_KEY']).toString());
   Weather? _weather;
   var hour = DateTime.now();
   var bgColor = const Color.fromARGB(255, 26, 26, 26);
@@ -29,10 +26,12 @@ class _WeatherPageState extends State<WeatherPage> {
       final weather = await _weatherService.getWeather(cityName);
       setState(() {
         _weather = weather;
-        if (hour.hour>17 && hour.hour<=4) {
+        if (hour.hour < 17 && hour.hour >= 4) {
           bgColor = Colors.white;
         }
-        textColor = (bgColor.computeLuminance() < 0.5)? const Color.fromARGB(255, 202, 196, 196): const Color.fromARGB(255, 67, 67, 67);
+        textColor = (bgColor.computeLuminance() < 0.5)
+            ? const Color.fromARGB(255, 202, 196, 196)
+            : const Color.fromARGB(255, 67, 67, 67);
       });
     } catch (e) {
       print(e);
@@ -55,8 +54,9 @@ class _WeatherPageState extends State<WeatherPage> {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController t = TextEditingController();
+
     return Scaffold(
-      backgroundColor: bgColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -70,8 +70,11 @@ class _WeatherPageState extends State<WeatherPage> {
                 ),
                 Text(
                   _weather?.cityName ?? "loading city...",
-                  style: GoogleFonts.getFont('Teko',color: textColor,fontSize: 50,fontWeight: FontWeight.bold),
-                )
+                  style: GoogleFonts.getFont('Teko',
+                      color: textColor,
+                      fontSize: 50,
+                      fontWeight: FontWeight.bold),
+                ),
               ],
             ),
             Column(
@@ -79,13 +82,17 @@ class _WeatherPageState extends State<WeatherPage> {
                 Lottie.asset(getWeatherAnimation()),
                 Text(
                   _weather?.weatherConditon ?? "",
-                  style: GoogleFonts.getFont('Teko',color: textColor,fontSize: 30,fontWeight: FontWeight.bold),
+                  style: GoogleFonts.getFont('Teko',
+                      color: textColor,
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold),
                 ),
               ],
             ),
             Text(
               '${_weather?.temperature.round() ?? ""}°',
-              style: GoogleFonts.getFont('Teko',color: textColor,fontSize: 50,fontWeight: FontWeight.bold),
+              style: GoogleFonts.getFont('Teko',
+                  color: textColor, fontSize: 50, fontWeight: FontWeight.bold),
             ),
           ],
         ),
